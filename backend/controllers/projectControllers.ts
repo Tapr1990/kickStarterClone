@@ -3,11 +3,23 @@ import { Response, Request } from "express";
 
 
 const getProjects = (req: Request, res: Response) => {
-    res.json({message: "Get all projects"});
+    res.status(200).json({message: "Get all projects"});
 };
 
 const createProject = (req: Request, res: Response) => {
-    res.json({message: "Create projects"});
+
+    if(req.body.title) {
+        res.status(201).json({message: "Created project"});
+    } else {
+        
+        res.status(400)
+        throw new Error("Title is required");
+    }
+    
+    
+        
+
+
 };
 
 const getProject = (req: Request, res: Response) => {
