@@ -6,7 +6,7 @@ app.use(express.json());
 
 import routes from './routes/projectRoutes';
 
-app.use("/", routes);
+app.use("/api/projects", routes);
 
 app.listen(PORT, () => {
     console.log(`SERVER STARTED ON PORT ${PORT}`);
