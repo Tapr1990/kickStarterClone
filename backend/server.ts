@@ -1,17 +1,26 @@
-import * as express from 'express';
+import mongoose from 'mongoose';
+
+import app from "./app";
 import { PORT } from './utils/config';
+import * as Colors from "colors.ts";
 
-const app = express();
-app.use(express.json());
+Colors.colors;
 
-import routes from './routes/projectRoutes';
-import { errorHandler } from './middleware/errorMiddleware';
+mongoose
+.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`)
+.then( () => console.log("MongoDB is connected".blue.underline.bold))
+.catch(err => console.error(err));
 
-app.use("/api/projects", routes);
 
-
-app.use(errorHandler);
 
 app.listen(PORT, () => {
-    console.log(`SERVER STARTED ON PORT ${PORT}`);
+    console.log(`SERVER STARTED ON PORT ${PORT}`.blue.underline.bold);
 });
+
+
+
+
+
+
+
+
