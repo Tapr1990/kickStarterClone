@@ -1,4 +1,4 @@
-import { checkIsValidId } from '../dataBase/dataBase';
+import { checkIsValidId, sanitizeProject } from "../sanitizers/projectSanitizer";
 import Project from '../models/projectModel';
 import { idProjectSchema } from '../schema/projectSchema';
 import { ProjectType } from '../types/projectType';
@@ -21,8 +21,11 @@ export async function getProjectsService(): Promise<ProjectType[]> {
 }
 
 export async function createProjectService(project: ProjectType): Promise<ProjectType> {
+
+    const sanitizedProject = sanitizeProject(project);
+
     try {
-       const newProject = await Project.create(project);
+       const newProject = await Project.create(sanitizedProject);
 
        if(!project) {
             throw new Error("Project not created");
@@ -57,10 +60,11 @@ export async function getProjectService(projectID: string): Promise<idProjectSch
 export async function updateProjectService(projectID: string, projectBody: ProjectType): Promise<idProjectSchema> {
 
     checkIsValidId(projectID);
+    const sanitizedProject = sanitizeProject(projectBody);
     
     try {
 
-        const project = await Project.findByIdAndUpdate(projectID, projectBody, {new: true});
+        const project = await Project.findByIdAndUpdate(projectID, sanitizedProject, {new: true});
         
         if(!project) {
             throw new Error("Project not found");
