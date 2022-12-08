@@ -5,13 +5,13 @@ const express = require("express");
 const router = express.Router();
 
 router.route("/")
-.get(projectControllers.getProjects)
-.post(projectControllers.createProject);
+.get(projectControllers.getProjectsController)
+.post(projectControllers.createProjectController);
 
 router.route("/:id")
-.get(projectControllers.getProject)
-.put(projectControllers.upadteProject)
-.delete(projectControllers.deleteProject);
+.get(projectControllers.getProjectController)
+.put(projectControllers.upadteProjectController)
+.delete(projectControllers.deleteProjectController);
 
 
 export default router;

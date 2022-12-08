@@ -1,58 +1,56 @@
 import { Response, Request } from "express";
 import mongoose from "mongoose";
-import Project from '../models/projectModel';
+import { checkIsValidId } from "../dataBase/dataBase";
+
+import { createProjectService, deleteProjectService, getProjectService, getProjectsService, updateProjectService } from "../services/projectServices";
 const asyncHandler = require("express-async-handler");
 
 
-const getProjects = asyncHandler(async (req: Request, res: Response) => {
-    const projects = await Project.find();
+const getProjectsController = asyncHandler(async (req: Request, res: Response) => {
+    const projects = await getProjectsService();
+
     res.status(200).json(projects);
 });
 
 
-const createProject = asyncHandler(async (req: Request, res: Response) => {
+const createProjectController = asyncHandler(async (req: Request, res: Response) => {
+    const data = req.body;
 
-    if(req.body.title) {
-        const project = await Project.create(req.body);
-        if(!project) {
-            res.status(400)
-            throw new Error("Project not created");
-        }
-        res.status(201).json(project);
-    } else {
-        
+    if(!data) {
         res.status(400)
         throw new Error("Title is required");
+        
+    } else {
+        const project = await createProjectService(data);
+        if(!project) {
+            res.status(404)
+        }
+        res.status(201).json(project);
+        
     }
     
 });
     
         
-const getProject = asyncHandler(async (req: Request, res: Response) => {
-    /*console.log(req);
-    console.log("********");
-    console.log(req.params);*/
+const getProjectController = asyncHandler(async (req: Request, res: Response) => {
 
    
     const id = req.params.id;
 
-    if(!mongoose.Types.ObjectId.isValid(id)) {
-        res.status(400);
-        throw new Error(`${id} is not a valid id`);
-    }
+   
 
-    const project = await Project.findById(id);
+    const project = await getProjectService(id);
 
     if(!project) {
         res.status(404);
-        throw new Error("Project not found");
     }
     res.status(200).json(project);
+        
         
 });
 
 
-const upadteProject = asyncHandler(async (req: Request, res: Response) => {
+const upadteProjectController = asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id;
     const body = req.body;
 
@@ -61,36 +59,27 @@ const upadteProject = asyncHandler(async (req: Request, res: Response) => {
         throw new Error("Title is required");
     }
    
-    if(!mongoose.Types.ObjectId.isValid(id)) {
-        res.status(400);
-        throw new Error(`${id} is not a valid id`);
-    }
+    
 
-    const project = await Project.findByIdAndUpdate(id, body, {new: true});
+    const project = await updateProjectService(id, body);
 
     if(!project) {
         res.status(404);
-        throw new Error("Project not found")
     }
     res.json(project);
+       
 
 });
 
 
-const deleteProject = asyncHandler(async (req: Request, res: Response) => {
+const deleteProjectController = asyncHandler(async (req: Request, res: Response) => {
     const id = req.params.id;
 
-    if(!mongoose.Types.ObjectId.isValid(id)) {
-        res.status(400);
-        throw new Error(`${id} is not a valid id`);
-    }
   
-    const project = await Project.findByIdAndDelete(id);
+  
+    const project = await deleteProjectService(id);
 
-    if(!project) {
-        res.status(404);
-        throw new Error("Project not found");
-    }
+   
     res.status(200).json({ 
         message: `Project ${id} Deleted`, 
         project: project
@@ -99,7 +88,7 @@ const deleteProject = asyncHandler(async (req: Request, res: Response) => {
 
 });
 
-export default {getProjects, createProject, getProject, upadteProject, deleteProject};
+export default {getProjectsController, createProjectController, getProjectController, upadteProjectController, deleteProjectController};
 
 
 
