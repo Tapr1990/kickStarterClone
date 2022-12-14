@@ -1,7 +1,8 @@
-import { checkIsValidId, sanitizeUser } from "../sanitizers/userSanitizer";
+import { checkIsValidId, sanitizeLoginUser, sanitizeUser } from "../sanitizers/userSanitizer";
 import userModel from '../models/userModel';
 import { idUserSchema } from '../schema/userSchema';
 import { UserType } from '../types/userType';
+import bcrypt from 'bcryptjs';
 
 
 export async function getUsersService(): Promise<UserType[]> {
@@ -22,7 +23,7 @@ export async function getUsersService(): Promise<UserType[]> {
 
 export async function createUserService(user: UserType): Promise<UserType> {
 
-    const sanitizedUser = sanitizeUser(user);
+    const sanitizedUser = await sanitizeUser(user);
 
     try {
        const newUser = await userModel.create(sanitizedUser);
@@ -57,10 +58,34 @@ export async function getUserService(userID: string): Promise<idUserSchema> {
     }
 }
 
+export async function loginUserService(email: string, password: string): Promise<UserType> {
+    
+    const sanitizedUser = await sanitizeLoginUser(email, password);
+
+    try{
+        const sanitizedUser = await userModel.findOne({ email });
+        if(!sanitizedUser) {
+            throw new Error("User not found");
+        }
+         
+        const isPasswordValid = await bcrypt.compare(password, sanitizedUser.password);
+        if(!isPasswordValid) {
+            throw new Error("Password is invalid");
+            
+        }
+
+        return sanitizedUser;    
+        
+    } catch (err) {
+        throw new Error(`Failed to login user: ${err.message}`);
+    }
+        
+}
+
 export async function updateUserService(userID: string, userBody: UserType): Promise<idUserSchema> {
 
     checkIsValidId(userID);
-    const sanitizedUser = sanitizeUser(userBody);
+    const sanitizedUser = await sanitizeUser(userBody);
     
     try {
 

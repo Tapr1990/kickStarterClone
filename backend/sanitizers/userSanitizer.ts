@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import { emailRegex } from "../schema/userSchema";
 import { UserType } from "../types/userType";
 import HttpException from "../utils/httpException";
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 export function checkIsValidId(id: string) {
     if(!mongoose.Types.ObjectId.isValid(id)) {
@@ -12,12 +14,12 @@ export function checkIsValidId(id: string) {
 
 
 
-export function sanitizeUser(users: UserType): UserType {
+export async function sanitizeUser(users: UserType): Promise<UserType> {
 
     let sanitizedUser = <UserType>{}
 
     sanitizedUser.email = sanitizeEmail(users.email);
-    sanitizedUser.password = sanitizePassword(users.password);
+    sanitizedUser.password = await sanitizePassword(users.password);
     sanitizedUser.isAdmin = sanitizeIsAdmin(users.isAdmin);
     sanitizedUser.username = sanitizeUsername(users.username);
 
@@ -25,6 +27,16 @@ export function sanitizeUser(users: UserType): UserType {
 
     return sanitizedUser;
 }
+
+export async function sanitizeLoginUser(email: string, password: string): Promise<UserType> {
+    let sanitizedUser = <UserType>{};
+
+    sanitizedUser.email = sanitizeEmail(email);
+    sanitizedUser.password = await sanitizePassword(password);
+
+    return sanitizedUser;
+}
+
 
 function sanitizeUsername(username: string): string {
     // Types
@@ -52,10 +64,10 @@ function sanitizeIsAdmin(isAdmin: boolean): boolean {
 function sanitizeEmail(email: string): string {
     // Types
     if(email === undefined) {
-        throw new HttpException("Username is undefined", 400);
+        throw new HttpException("Email is undefined", 400);
     }
     if(typeof email !== "string") {
-        throw new HttpException("Username is not a string", 400);
+        throw new HttpException("Email is not a string", 400);
     }
 
     // Attributes
@@ -74,7 +86,7 @@ function sanitizeEmail(email: string): string {
     return email;    
 }
 
-function sanitizePassword(password: string): string {
+async function sanitizePassword(password: string): Promise<string> {
     // Types
     if(password === undefined) {
         throw new HttpException("Password is undefined", 400);
@@ -92,8 +104,12 @@ function sanitizePassword(password: string): string {
         throw new HttpException("Password must be less then 50 characters", 400);
     }    
   
+    //encrypt
 
-    return password;    
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    return hashedPassword;    
 }
         
    

@@ -7,6 +7,8 @@ router.route("/")
 .get(userControllers.getUsersController)
 .post(userControllers.createUserController);
 
+router.route("/login").post(userControllers.loginUser);
+
 router.route("/:id")
 .get(userControllers.getUserController)
 .put(userControllers.upadteUserController)

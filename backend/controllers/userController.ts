@@ -5,6 +5,7 @@ import { createUserService,
         deleteUserService, 
         getUserService, 
         getUsersService, 
+        loginUserService, 
         updateUserService 
 } from "../services/userServices";
 
@@ -43,6 +44,13 @@ const getUserController = asyncHandler(async (req: Request, res: Response) => {
     res.status(200).json(user);
 
 });
+
+
+const loginUser = asyncHandler(async (req: Request, res: Response) => {
+    const userLogin = await loginUserService(req.body.email, req.body.password);
+
+    res.status(200).json(userLogin);
+});
     
 
 const upadteUserController = asyncHandler(async (req: Request, res: Response) => {
@@ -73,7 +81,8 @@ const deleteUserController = asyncHandler(async (req: Request, res: Response) =>
 export default { 
     getUsersController, 
     createUserController, 
-    getUserController, 
+    getUserController,
+    loginUser, 
     upadteUserController, 
     deleteUserController 
 };
