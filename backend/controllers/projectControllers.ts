@@ -1,10 +1,16 @@
 import { Response, Request } from "express";
+import asyncHandler from 'express-async-handler';
+
+import { createProjectService, 
+        deleteProjectService, 
+        getProjectService, 
+        getProjectsService, 
+        updateProjectService 
+} from "../services/projectServices";
 
 
 
 
-import { createProjectService, deleteProjectService, getProjectService, getProjectsService, updateProjectService } from "../services/projectServices";
-const asyncHandler = require("express-async-handler");
 
 
 const getProjectsController = asyncHandler(async (req: Request, res: Response) => {
@@ -64,7 +70,13 @@ const deleteProjectController = asyncHandler(async (req: Request, res: Response)
 
 
     
-export default {getProjectsController, createProjectController, getProjectController, upadteProjectController, deleteProjectController};
+export default { 
+    getProjectsController, 
+    createProjectController, 
+    getProjectController, 
+    upadteProjectController, 
+    deleteProjectController 
+};
 
         
     

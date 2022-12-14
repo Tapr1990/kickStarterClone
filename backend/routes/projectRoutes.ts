@@ -1,7 +1,7 @@
 
 import projectControllers from "../controllers/projectControllers";
 
-const express = require("express");
+import express from 'express';
 const router = express.Router();
 
 router.route("/")

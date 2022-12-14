@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
+import Colors from "colors.ts";
 
 import app from "./app";
 import { PORT } from './utils/config';
-import * as Colors from "colors.ts";
 
-Colors.colors;
+Colors;
 
 mongoose
 .connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`)

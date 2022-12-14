@@ -14,7 +14,7 @@ export async function getProjectsService(): Promise<ProjectType[]> {
         return projects;
 
     } catch (err) {
-        throw new Error("Error! projects not found");
+        throw new Error(`Error! projects not found: ${err.message}`);
         
     }
 
@@ -34,7 +34,7 @@ export async function createProjectService(project: ProjectType): Promise<Projec
        return newProject;
 
     } catch (err) {
-        throw new Error("Error creating project");
+        throw new Error(`Error creating project: ${err.message} `);
         
     }
 }
@@ -52,7 +52,7 @@ export async function getProjectService(projectID: string): Promise<idProjectSch
         return project;
             
     } catch (err) {
-        throw new Error("Error finfing project");
+        throw new Error(`Error finfing project: ${err.message}`);
         
     }
 }
@@ -72,7 +72,7 @@ export async function updateProjectService(projectID: string, projectBody: Proje
         return project;
 
     } catch (err) {
-        throw new Error("Project not update");
+        throw new Error(`Project not update: ${err.message}`);
         
     }
         
@@ -92,7 +92,7 @@ export async function deleteProjectService(projectID: string): Promise<void> {
         return;
 
     } catch (err) {
-        throw new Error("Project not deleted");
+        throw new Error(`Project not deleted: ${err.message}`);
         
     }
         
