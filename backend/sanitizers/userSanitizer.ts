@@ -104,12 +104,8 @@ async function sanitizePassword(password: string): Promise<string> {
         throw new HttpException("Password must be less then 50 characters", 400);
     }    
   
-    //encrypt
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    return hashedPassword;    
+    return password;    
 }
         
    
